@@ -1,0 +1,41 @@
+ sloc）  1.21 KB
+导入张量流为tf
+导入numpy为np
+
+def add_layer（inputs，in_size，out_size，activation_function = None）：
+    权重= tf.Variable（tf.random_normal（[in_size，out_size]））
+    偏置= tf.Variable（tf.zeros（[1，out_size]）+ 0.1）
+    Wx_plus_b = tf.matmul（输入，权重）+偏差
+    如果activation_function为None：
+        输出= Wx_plus_b
+    其他：
+        输出= activation_function（Wx_plus_b）
+    返回输出
+
+x_data = np.linspace（-1,1,300，dtype = np.float32）[：，np.newaxis]
+noise = np.random.normal（0,0.05，x_data.shape）.astype（np.float32）
+y_data = np.square（x_data）-0.5 +噪音
+
+xs = tf.placeholder（tf.float32，[None，1]）
+ys = tf.placeholder（tf.float32，[None，1]）
+
+l1 = add_layer（xs，1,10，activation_function = tf.nn.relu）
+prediction = add_layer（l1,10,1，activation_function = None）
+loss = tf.reduce_mean（tf.reduce_sum（tf.square（ys-prediction），reduction_indices = [1]））
+train_step = tf.train.GradientDescentOptimizer（0.1）.minimize（loss）
+
+＃初始化
+
+init = tf.global_variables_initializer（）
+sess = tf.Session（）
+＃运行初始化
+sess.run（INIT）
+
+＃开始训练
+我在范围内（100000）：
+    ＃训练
+    sess.run（train_step，feed_dict = {XS：x_data，YS：y_data}）
+    如果我％200 == 0：
+        打印（sess.run（损失，feed_dict = {XS：x_data，YS：y_data}））
+        
+sess.close（）
